@@ -1,28 +1,60 @@
-// Function to add a new party to the list
-function addParty(name, date, time, location, description) {
-    const partyList = document.getElementById("partyList");
-    const li = document.createElement("li");
-    li.innerHTML = `<strong>${name}</strong> - Date: ${date}, Time: ${time}, Location: ${location}, Description: ${description} <button class="delete">Delete</button>`;
-    partyList.appendChild(li);
 
-    // Attach a click event to the delete button
-    const deleteButton = li.querySelector(".delete");
-    deleteButton.addEventListener("click", function () {
-        partyList.removeChild(li);
-    });
+// Define an array to store party data
+const parties = [];
+
+// Function to add a new party to the list
+function addPartyToList(party) {
+  const partyList = document.getElementById("partyList");
+  const li = document.createElement("li");
+  li.innerHTML = `
+    <strong>${party.name}</strong> - Date: ${party.date}, Time: ${party.time}, Location: ${party.location}, Description: ${party.description}
+    <button class="delete">Delete</button>`;
+  partyList.appendChild(li);
+
+  // Attach a click event to the delete button
+  const deleteButton = li.querySelector(".delete");
+  deleteButton.addEventListener("click", () => {
+    removeParty(party);
+  });
 }
 
-// Handle form submission
+// Function to remove a party from the list
+function removeParty(party) {
+  const partyList = document.getElementById("partyList");
+  const partyIndex = parties.indexOf(party);
 
-document.getElementById('party-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const name = document.getElementById("name").value;
-    const date = document.getElementById("date").value;
-    const time = document.getElementById("time").value;
-    const location = document.getElementById("location").value;
-    const description = document.getElementById("description").value;
-    addParty(name, date, time, location, description);
+  if (partyIndex !== -1) {
+    parties.splice(partyIndex, 1);
+    partyList.removeChild(partyList.children[partyIndex]);
+  }
+}
 
-    // Clear the form fields
-    partyForm.reset();
-});
+// Function to handle the party form submission
+function handlePartyFormSubmit(e) {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const date = document.getElementById("date").value;
+  const time = document.getElementById("time").value;
+  const location = document.getElementById("location").value;
+  const description = document.getElementById("description").value;
+
+  const party = {
+    name,
+    date,
+    time,
+    location,
+    description,
+  };
+
+  // Add the party to the array and list
+  parties.push(party);
+  addPartyToList(party);
+
+  // Clear the form fields
+  document.getElementById("partyForm").reset();
+}
+
+// Attach the form submission event
+const partyForm = document.getElementById("partyForm");
+partyForm.addEventListener("submit", handlePartyFormSubmit);
